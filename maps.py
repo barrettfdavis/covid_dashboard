@@ -33,6 +33,9 @@ import pandas as pd
 import numpy as np
 
 import json
+import requests
+
+
 
 ##############################################################################
 #
@@ -40,10 +43,13 @@ import json
 #
 ##############################################################################
 
-df_data = pd.read_excel('covid_report_county_date.xlsx')
+url = 'https://hub.mph.in.gov/dataset/bd08cdd3-9ab1-4d70-b933-41f9ef7b809d/resource/afaa225d-ac4e-4e80-9190-f6800c366b58/download/covid_report_county_date.xlsx' 
+r = requests.get(url)
+df_data = pd.read_excel(r.content)
+
 dict_pop  = pd.read_csv('IN_county_population.csv',index_col=0, squeeze=True).to_dict()
 
-with open('json_indiana.json') as geofile:
+with open("json_indiana.json") as geofile:
     json_indiana = json.load(geofile)
     
 ##############################################################################
@@ -129,5 +135,6 @@ fig.update_geos(fitbounds="locations", visible=True
 ##############################################################################
 
 
-plotly.offline.plot(fig,filename='IndianaCOVID.html')
-
+#plotly.offline.plot(fig,filename='IndianaCOVID_small.html')
+import plotly.io as pio
+pio.write_html(fig, file='index.html', auto_open=True)
